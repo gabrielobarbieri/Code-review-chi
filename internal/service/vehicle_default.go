@@ -18,3 +18,8 @@ func (s *VehicleDefault) FindAll() (v map[int]internal.Vehicle, err error) {
 	v, err = s.rp.FindAll()
 	return
 }
+
+func (s *VehicleDefault) FindByBrandAndYearInterval(brand string, starYear, endYear int) (v []internal.Vehicle, err error) {
+	v, err = s.rp.FindByBrandAndYearInterval(brand, starYear, endYear)
+	return
+}

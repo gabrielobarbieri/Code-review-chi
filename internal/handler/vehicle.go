@@ -3,8 +3,10 @@ package handler
 import (
 	"app/internal"
 	"net/http"
+	"strconv"
 
 	"github.com/bootcamp-go/web/response"
+	"github.com/go-chi/chi/v5"
 )
 
 // VehicleJSON is a struct that represents a vehicle in JSON format
@@ -70,6 +72,34 @@ func (h *VehicleDefault) GetAll() http.HandlerFunc {
 				Width:           value.Width,
 			}
 		}
+		response.JSON(w, http.StatusOK, map[string]any{
+			"message": "success",
+			"data":    data,
+		})
+	}
+}
+
+func (h *VehicleDefault) GetByBrandAndYearInterval() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		brand := chi.URLParam(r, "brand")
+		startYear, err := strconv.Atoi(chi.URLParam(r, "start_year"))
+		if err != nil {
+			response.JSON(w, http.StatusBadRequest, nil)
+			return
+		}
+
+		endYear, err := strconv.Atoi(chi.URLParam(r, "end_year"))
+		if err != nil {
+			response.JSON(w, http.StatusBadRequest, nil)
+			return
+		}
+
+		data, err := h.sv.FindByBrandAndYearInterval(brand, startYear, endYear)
+		if err != nil {
+			response.JSON(w, http.StatusNotFound, nil)
+			return
+		}
+
 		response.JSON(w, http.StatusOK, map[string]any{
 			"message": "success",
 			"data":    data,

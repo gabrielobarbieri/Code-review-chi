@@ -36,3 +36,21 @@ func (r *VehicleMap) FindAll() (v map[int]internal.Vehicle, err error) {
 
 	return
 }
+
+func (r *VehicleMap) FindByBrandAndYearInterval(brand string, startYear, endYear int) (v []internal.Vehicle, err error) {
+	var vehicles []internal.Vehicle
+
+	for _, v := range r.db {
+		if v.Brand == brand {
+			if v.FabricationYear > startYear && v.FabricationYear < endYear {
+				vehicles = append(vehicles, v)
+			}
+		}
+	}
+
+	if len(vehicles) == 0 {
+		return nil, ErrVehiclesNotFound
+	}
+
+	return vehicles, nil
+}
